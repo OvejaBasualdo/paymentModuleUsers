@@ -1,6 +1,6 @@
 package com.accenture.paymentModule;
 
-import com.accenture.paymentModule.models.User;
+import com.accenture.paymentModule.entity.User;
 import com.accenture.paymentModule.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
