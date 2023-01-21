@@ -1,4 +1,4 @@
-package com.accenture.paymentModule.models;
+package com.accenture.paymentModule.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -11,17 +11,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
-    private String name;
+    private String firstName;
     private String lastName;
     private String dni;
     private String email;
     private String password;
+    /*private Set<Account> accounts = new HashSet<>();*/
 
     public User() {
     }
 
-    public User(String name, String lastName, String dni, String email, String password) {
-        this.name = name;
+    public User(String firstName, String lastName, String dni, String email, String password) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.dni = dni;
         this.email = email;
@@ -36,12 +37,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -75,4 +76,17 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    /*public Set<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
+    }
+
+    public void addAccount(Account account){
+        account.setUser(this);
+        accounts.add(account);
+    }*/
 }
