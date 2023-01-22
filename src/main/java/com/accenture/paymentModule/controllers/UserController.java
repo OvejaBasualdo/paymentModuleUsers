@@ -1,8 +1,13 @@
 package com.accenture.paymentModule.controllers;
 
 import com.accenture.paymentModule.entity.User;
+import com.accenture.paymentModule.models.Account;
+import com.accenture.paymentModule.repository.UserRepository;
 import com.accenture.paymentModule.service.IUserService;
+import com.accenture.paymentModule.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +17,9 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private IUserService userService;
+    private UserServiceImpl userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/list")
     public List<User> userList() {
@@ -34,6 +41,39 @@ public class UserController {
         return userService.findByLastNameIgnoreCase(lastName);
     }
 
-    /*@PostMapping("/createUser")
-    public*/
+    @PostMapping("/createUser")
+    public ResponseEntity<Object> createUser(@RequestParam String firstName, @RequestParam String lastName,
+                                             @RequestParam String dni, @RequestParam String email,
+                                             @RequestParam String password) {
+        if (dni.length() != 8) {
+            return new ResponseEntity<>("Just insert numbers on dni field", HttpStatus.FORBIDDEN);
+        }
+
+        if (firstName.isEmpty() || lastName.isEmpty() || dni.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Missing data, please check all fields", HttpStatus.FORBIDDEN);
+        }
+        if (userRepository.findByDni(dni).isPresent()) {
+            return new ResponseEntity<>("You have an user!", HttpStatus.FORBIDDEN);
+        }
+        User user = new User(firstName, lastName, dni, email, password);
+        userRepository.save(user);
+        return new ResponseEntity<>("User created", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/createUsers")
+    public ResponseEntity<Object> createUsers(@RequestBody User user) {
+        if (user.getDni().length() != 8) {
+            return new ResponseEntity<>("Just insert numbers on dni field", HttpStatus.FORBIDDEN);
+        }
+
+        if (user.getFirstName().isEmpty() || user.getLastName().isEmpty() || user.getDni().isEmpty()
+                || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
+            return new ResponseEntity<>("Missing data, please check all fields", HttpStatus.FORBIDDEN);
+        }
+        if (userRepository.findByDni(user.getDni()).isPresent()) {
+            return new ResponseEntity<>("You have an user!", HttpStatus.FORBIDDEN);
+        }
+        userRepository.save(user);
+        return new ResponseEntity<>("User created", HttpStatus.CREATED);
+    }
 }
