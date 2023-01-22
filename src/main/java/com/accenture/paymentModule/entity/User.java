@@ -3,6 +3,8 @@ package com.accenture.paymentModule.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -16,7 +18,15 @@ public class User {
     private String dni;
     private String email;
     private String password;
-    /*private Set<Account> accounts = new HashSet<>();*/
+    private Set<Long> accountId;
+
+    public Set<Long> getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Set<Long> accountId) {
+        this.accountId = accountId;
+    }
 
     public User() {
     }
@@ -28,6 +38,7 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
 
     public Long getId() {
         return id;
@@ -77,16 +88,4 @@ public class User {
         this.password = password;
     }
 
-    /*public Set<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(Set<Account> accounts) {
-        this.accounts = accounts;
-    }
-
-    public void addAccount(Account account){
-        account.setUser(this);
-        accounts.add(account);
-    }*/
 }
