@@ -1,6 +1,7 @@
 package com.accenture.paymentModule.service;
 
 import com.accenture.paymentModule.entity.User;
+import com.accenture.paymentModule.models.Account;
 import com.accenture.paymentModule.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RestTemplate userRest;
+    private RestTemplate accountRest;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,5 +38,11 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     public User findByLastNameIgnoreCase(String lastName) {
         return userRepository.findByLastNameIgnoreCase(lastName).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByDni(String dni) {
+        return userRepository.findByDni(dni).orElse(null);
     }
 }

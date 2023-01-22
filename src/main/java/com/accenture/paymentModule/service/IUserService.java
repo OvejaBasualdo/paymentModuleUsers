@@ -9,5 +9,6 @@ public interface IUserService {
     public User findById(Long id);
     public User findByFirstNameIgnoreCase(String firstName);
     public User findByLastNameIgnoreCase(String lastName);
+    public User findByDni (String dni);
 
 }
