@@ -1,8 +1,11 @@
 package com.accenture.paymentModule.entity;
 
+import com.accenture.paymentModule.dto.UserDTO;
+import com.accenture.paymentModule.models.Account;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,7 +21,9 @@ public class User {
     private String dni;
     private String email;
     private String password;
-    private Set<Long> accountId;
+    @Transient
+    private Set<Account> accounts=new HashSet<>();
+    private Set<Long> accountId=new HashSet<>();
 
     public Set<Long> getAccountId() {
         return accountId;
@@ -39,6 +44,13 @@ public class User {
         this.password = password;
     }
 
+    public User(UserDTO userDTO) {
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+        this.dni = userDTO.getDni();
+        this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
+    }
 
     public Long getId() {
         return id;
