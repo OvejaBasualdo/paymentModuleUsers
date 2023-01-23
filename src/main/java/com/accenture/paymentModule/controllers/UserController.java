@@ -1,9 +1,8 @@
 package com.accenture.paymentModule.controllers;
 
+import com.accenture.paymentModule.dto.UserDTO;
 import com.accenture.paymentModule.entity.User;
-import com.accenture.paymentModule.models.Account;
 import com.accenture.paymentModule.repository.UserRepository;
-import com.accenture.paymentModule.service.IUserService;
 import com.accenture.paymentModule.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,6 +40,11 @@ public class UserController {
         return userService.findByLastNameIgnoreCase(lastName);
     }
 
+    @GetMapping("/userAccountsId/{userId}")
+    public List<Long> getUserByLastName(@PathVariable Long userId) {
+        return userService.findAccountFromUserId(userId);
+    }
+
     @PostMapping("/createUser")
     public ResponseEntity<Object> createUser(@RequestParam String firstName, @RequestParam String lastName,
                                              @RequestParam String dni, @RequestParam String email,
@@ -61,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping("/createUsers")
-    public ResponseEntity<Object> createUsers(@RequestBody User user) {
+    public ResponseEntity<Object> createUsers(@RequestBody UserDTO user) {
         if (user.getDni().length() != 8) {
             return new ResponseEntity<>("Just insert numbers on dni field", HttpStatus.FORBIDDEN);
         }
@@ -71,9 +75,10 @@ public class UserController {
             return new ResponseEntity<>("Missing data, please check all fields", HttpStatus.FORBIDDEN);
         }
         if (userRepository.findByDni(user.getDni()).isPresent()) {
-            return new ResponseEntity<>("You have an user!", HttpStatus.FORBIDDEN);
+            userService.createAccountToUser(user);
+            return new ResponseEntity<>("Another account created to user", HttpStatus.CREATED);
         }
-        userRepository.save(user);
+        userService.createUser(user);
         return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 }
