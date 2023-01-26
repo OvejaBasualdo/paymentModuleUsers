@@ -1,10 +1,14 @@
 package com.accenture.paymentModule.controllers;
 
 import com.accenture.paymentModule.dto.UserDTO;
+import com.accenture.paymentModule.entity.ResultsType;
 import com.accenture.paymentModule.entity.User;
+import com.accenture.paymentModule.models.Account;
 import com.accenture.paymentModule.repository.UserRepository;
+import com.accenture.paymentModule.service.IUserService;
 import com.accenture.paymentModule.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +20,8 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
-    @Autowired
-    private UserRepository userRepository;
+    @Qualifier("userServiceRestTemplate")
+    private IUserService userService;
 
     @GetMapping("/list")
     public List<User> userList() {
@@ -41,44 +44,28 @@ public class UserController {
     }
 
     @GetMapping("/userAccountsId/{userId}")
-    public List<Long> getUserByLastName(@PathVariable Long userId) {
+    public List<Account> getUserByLastName(@PathVariable Long userId) {
         return userService.findAccountFromUserId(userId);
-    }
-
-    @PostMapping("/createUser")
-    public ResponseEntity<Object> createUser(@RequestParam String firstName, @RequestParam String lastName,
-                                             @RequestParam String dni, @RequestParam String email,
-                                             @RequestParam String password) {
-        if (dni.length() != 8) {
-            return new ResponseEntity<>("Just insert numbers on dni field", HttpStatus.FORBIDDEN);
-        }
-
-        if (firstName.isEmpty() || lastName.isEmpty() || dni.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data, please check all fields", HttpStatus.FORBIDDEN);
-        }
-        if (userRepository.findByDni(dni).isPresent()) {
-            return new ResponseEntity<>("You have an user!", HttpStatus.FORBIDDEN);
-        }
-        User user = new User(firstName, lastName, dni, email, password);
-        userRepository.save(user);
-        return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 
     @PostMapping("/createUsers")
     public ResponseEntity<Object> createUsers(@RequestBody UserDTO user) {
-        if (user.getDni().length() != 8) {
-            return new ResponseEntity<>("Just insert numbers on dni field", HttpStatus.FORBIDDEN);
+        ResultsType result = userService.createUser(user);
+        switch (result) {
+            case SUCCESS:
+                return new ResponseEntity<>("User created", HttpStatus.CREATED);
+            case ACCOUNT_ADDED:
+                return new ResponseEntity<>("Account added", HttpStatus.CREATED);
+            case DNI_ERROR:
+                return new ResponseEntity<>("Error in DNI field, please check it.", HttpStatus.NOT_ACCEPTABLE);
+            case DNI_NUMBER_ERROR:
+                return new ResponseEntity<>("DNI field must have 7 or 8 digits", HttpStatus.NOT_ACCEPTABLE);
+            case DNI_EXISTENT:
+                return new ResponseEntity<>("DNI is already registered", HttpStatus.NOT_ACCEPTABLE);
+            case EMPTY_DATA:
+                return new ResponseEntity<>("Missing data, please check all fields", HttpStatus.NOT_ACCEPTABLE);
+            default:
+                return new ResponseEntity<>("NOT FOUND", HttpStatus.NOT_FOUND);
         }
-
-        if (user.getFirstName().isEmpty() || user.getLastName().isEmpty() || user.getDni().isEmpty()
-                || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
-            return new ResponseEntity<>("Missing data, please check all fields", HttpStatus.FORBIDDEN);
-        }
-        if (userRepository.findByDni(user.getDni()).isPresent()) {
-            userService.createAccountToUser(user);
-            return new ResponseEntity<>("Another account created to user", HttpStatus.CREATED);
-        }
-        userService.createUser(user);
-        return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 }
