@@ -1,12 +1,8 @@
-package com.accenture.paymentModule.entity;
+package com.microservices.paymentModule.entity;
 
-import com.accenture.paymentModule.dto.UserDTO;
-import com.accenture.paymentModule.models.Account;
+import com.microservices.paymentModule.dto.UserDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -23,27 +19,9 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
-    @Transient
-    private Set<Account> accounts=new HashSet<>();
-    private Set<Long> accountId=new HashSet<>();
-
-    public Set<Long> getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Set<Long> accountId) {
-        this.accountId = accountId;
-    }
+    private Boolean isActive;
 
     public User() {
-    }
-
-    public User(String firstName, String lastName, String dni, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dni = dni;
-        this.email = email;
-        this.password = password;
     }
 
     public User(UserDTO userDTO) {
@@ -52,6 +30,15 @@ public class User {
         this.dni = userDTO.getDni();
         this.email = userDTO.getEmail();
         this.password = userDTO.getPassword();
+        this.isActive = true;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     public Long getId() {

@@ -1,14 +1,10 @@
-package com.accenture.paymentModule.clients;
+package com.microservices.paymentModule.clients;
 
-import com.accenture.paymentModule.entity.User;
-import com.accenture.paymentModule.models.Account;
+import com.microservices.paymentModule.entity.User;
+import com.microservices.paymentModule.models.Account;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +15,8 @@ public interface UserClientsRest {
     public List<Account> getListAccounts();
     @GetMapping("/api/accounts/list/id/{id}")
     public Account getById(@PathVariable Long id);
-    @GetMapping("/api/accounts/list/userId/{userId}")
-    public List<Account> getByUserId(@PathVariable Long userId);
+    @GetMapping("/api/accounts/id/{idAccount}")
+    public List<Account> getByUserId(@PathVariable Long idAccount);
     @GetMapping("/api/accounts/list/accountNumber/{accountNumber}")
     public Account getByAccountNumber(@PathVariable String accountNumber);
 
@@ -29,4 +25,8 @@ public interface UserClientsRest {
 
     @PostMapping("/api/accounts/createAccount")
     public Account createAccount(@RequestBody User user);
+    @PutMapping("/api/accounts/deleteAccount/{idAccount}")
+    public ResponseEntity<Object> deleteAccount(@RequestBody User user, @PathVariable Long idAccount);
+    @PutMapping("/api/accounts/deleteUserAccounts")
+    public ResponseEntity<Object> deleteUserAccounts(@RequestBody User user) throws Exception;
 }

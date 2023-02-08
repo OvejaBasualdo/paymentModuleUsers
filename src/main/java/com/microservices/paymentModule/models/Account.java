@@ -1,6 +1,4 @@
-package com.accenture.paymentModule.models;
-
-import com.accenture.paymentModule.entity.User;
+package com.microservices.paymentModule.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

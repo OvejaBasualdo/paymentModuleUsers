@@ -1,4 +1,4 @@
-package com.accenture.paymentModule;
+package com.microservices.paymentModule;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

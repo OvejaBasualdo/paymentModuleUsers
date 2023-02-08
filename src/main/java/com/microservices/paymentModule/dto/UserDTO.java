@@ -1,6 +1,6 @@
-package com.accenture.paymentModule.dto;
+package com.microservices.paymentModule.dto;
 
-import com.accenture.paymentModule.entity.User;
+import com.microservices.paymentModule.entity.User;
 
 public class UserDTO {
     private Long id;

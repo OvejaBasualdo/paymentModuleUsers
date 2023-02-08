@@ -1,4 +1,4 @@
-package com.accenture.paymentModule;
+package com.microservices.paymentModule;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
