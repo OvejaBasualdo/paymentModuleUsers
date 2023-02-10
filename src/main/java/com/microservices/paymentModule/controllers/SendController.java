@@ -1,9 +1,9 @@
-/*package com.microservices.paymentModule.controllers;
+package com.microservices.paymentModule.controllers;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -29,8 +29,8 @@ public class SendController {
                 ObjectMessage object = session.createObjectMessage(message);
                 return object;
             }
+
         });
         return message;
     }
 }
-*/
