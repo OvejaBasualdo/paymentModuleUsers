@@ -40,12 +40,12 @@ public class UserController {
         Map<String, String> json = new HashMap<>();
         json.put("texto", texto);
         json.put("puerto", puerto);
-        if (env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].equals("dev")){
+        if (env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].equals("dev")) {
             json.put("autor.nombre", env.getProperty("configuracion.autor.nombre"));
             json.put("autor.email", env.getProperty("configuracion.autor.email"));
         }
 
-            return new ResponseEntity<Map<String, String>>(json, HttpStatus.OK);
+        return new ResponseEntity<Map<String, String>>(json, HttpStatus.OK);
     }
 
     @GetMapping("/list")
@@ -65,6 +65,15 @@ public class UserController {
     @GetMapping("/user/accounts/{idAccount}")
     public List<Account> getUserByUserId(@PathVariable Long idAccount) {
         return userService.findByIdAccount(idAccount);
+    }
+
+    @GetMapping("/findByEmail/{email}")
+    public ResponseEntity<Object> findByEmail(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/createUsers")

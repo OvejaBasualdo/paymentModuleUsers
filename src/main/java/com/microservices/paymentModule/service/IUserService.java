@@ -19,6 +19,7 @@ public interface IUserService {
     public User createUser(UserDTO userDTO)throws Exception;
 
     public User deleteUser(User user) throws Exception;
+    public User findByEmail(String email);
 
     public User editUser(Long id, User user) throws Exception;
 

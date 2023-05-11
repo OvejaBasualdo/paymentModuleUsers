@@ -3,11 +3,17 @@ package com.microservices.paymentModule.entity;
 import com.microservices.paymentModule.dto.UserDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -16,10 +22,33 @@ public class User {
     private String lastName;
     @Column(unique = true)
     private String dni;
-    @Column(unique = true)
+    @Column(unique = true, length = 20)
     private String email;
+    @Column(length = 60)
     private String password;
     private Boolean isActive;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
+    List<Role> roles = new ArrayList<>();
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 
     public User() {
     }
@@ -29,7 +58,9 @@ public class User {
         this.lastName = userDTO.getLastName();
         this.dni = userDTO.getDni();
         this.email = userDTO.getEmail();
-        this.password = userDTO.getPassword();
+        String encodePassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
+        this.password = encodePassword;
+        this.roles.add(new Role("ROLE_USER"));
         this.isActive = true;
     }
 

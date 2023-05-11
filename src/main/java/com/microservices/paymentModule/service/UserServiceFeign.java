@@ -116,6 +116,11 @@ public class UserServiceFeign implements IUserService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public User editUser(Long id, User user) throws Exception {
         User userToEdit = userRepository.findById(id).orElse(null);
         if (userToEdit == null) {
